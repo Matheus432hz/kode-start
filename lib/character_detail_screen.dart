@@ -20,7 +20,7 @@ class CharacterDetailScreen extends StatelessWidget {
     final textColor = isDarkMode ? AppColors.textColorDark : AppColors.textColorLight;
 
     return Scaffold(
-      // Usando a nossa AppBar customizada (sem o isHomePage, para mostrar o botão de voltar)
+      // Usando a AppBar customizada (sem o isHomePage, para mostrar o botão de voltar)
       appBar: const AppBarComponent(),
       body: SingleChildScrollView(
         child: Card(
@@ -56,7 +56,7 @@ class CharacterDetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Status (com bolinha colorida)
+                    // Status ( bola colorida)
                     Row(
                       children: [
                         Container(

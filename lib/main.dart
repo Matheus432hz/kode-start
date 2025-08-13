@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Importa o provider
+import 'package:provider/provider.dart';
 import 'api_service.dart';
 import 'character_model.dart';
 import 'character_detail_screen.dart';
 import 'components/card_character_component.dart';
 import 'components/app_bar_component.dart';
-import 'controllers/theme_controller.dart'; // Importa nosso controlador
+import 'controllers/theme_controller.dart';
 import 'theme/app_colors.dart';
 
 void main() {
   runApp(
-    // Disponibiliza o ThemeController para todo o app
+    // ThemeController para todo o app
     ChangeNotifierProvider(
       create: (context) => ThemeController(),
       child: const MyApp(),
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      // O tema agora é controlado pelo nosso controller
+      // O tema agora é controlado pelo controller
       themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: CharacterListScreen(),
     );
