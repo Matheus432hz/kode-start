@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Importa o provider
 import 'api_service.dart';
 import 'character_model.dart';
 import 'character_detail_screen.dart';
-import 'components/card_character_component.dart'; // Importa o novo card
-import 'components/app_bar_component.dart';       // Importa a nova AppBar
-import 'theme/app_colors.dart';                   // Importa nossas cores
+import 'components/card_character_component.dart';
+import 'components/app_bar_component.dart';
+import 'controllers/theme_controller.dart'; // Importa nosso controlador
+import 'theme/app_colors.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    // Disponibiliza o ThemeController para todo o app
+    ChangeNotifierProvider(
+      create: (context) => ThemeController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,31 +23,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // "Ouve" as mudanças no ThemeController
+    final themeController = context.watch<ThemeController>();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Rick and Morty App',
-      // Tema para o modo claro (Light Mode)
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: AppColors.backgroundColorLight,
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.backgroundColorLight,
-          foregroundColor: AppColors.textColorLight, // Cor dos ícones e texto da AppBar
+          foregroundColor: AppColors.textColorLight,
           elevation: 0,
         ),
       ),
-      // Tema para o modo escuro (Dark Mode)
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: AppColors.backgroundColorDark,
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.backgroundColorDark,
-          foregroundColor: AppColors.textColorDark, // Cor dos ícones e texto da AppBar
+          foregroundColor: AppColors.textColorDark,
           elevation: 0,
         ),
       ),
-      // Deixa o app escolher o tema baseado no sistema (se é modo escuro ou claro)
-      themeMode: ThemeMode.system,
+      // O tema agora é controlado pelo nosso controller
+      themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: CharacterListScreen(),
     );
   }
@@ -62,7 +71,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Usando a nossa AppBar customizada
       appBar: const AppBarComponent(isHomePage: true),
       body: FutureBuilder<List<Character>>(
         future: futureCharacters,
@@ -77,7 +85,6 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 Character character = snapshot.data![index];
-                // USANDO O NOVO COMPONENTE DE CARD
                 return CardCharacterComponent(
                   characterName: character.name,
                   characterImg: character.image,

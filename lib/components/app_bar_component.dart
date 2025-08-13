@@ -1,14 +1,15 @@
 // lib/components/app_bar_component.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/theme_controller.dart';
 import '../theme/app_images.dart';
-import '../theme/app_colors.dart';
 
 class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   final bool isHomePage;
 
   const AppBarComponent({
     super.key,
-    this.isHomePage = false, // Por padrão, não é a home page
+    this.isHomePage = false,
   });
 
   @override
@@ -16,18 +17,32 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    // Usamos 'watch' para que o ícone mude quando o tema for trocado
+    final themeController = context.watch<ThemeController>();
 
     return AppBar(
-      // A cor do fundo vem do tema que já definimos
       centerTitle: true,
-      // Ícone de voltar automático (só aparece se não for a home page)
-      // A cor dele já é definida pelo foregroundColor no tema
-      leading: isHomePage ? null : BackButton(),
+      leading: isHomePage ? null : const BackButton(),
       title: Image.asset(
         AppImages.logo,
-        height: 40, // Ajuste a altura conforme necessário
+        height: 40,
       ),
+      // Ações que aparecem no lado direito da AppBar
+      actions: [
+        // Ícone de sol/lua
+        Icon(themeController.isDarkMode ? Icons.nightlight_round : Icons.wb_sunny),
+        // Switch para ligar/desligar o modo escuro
+        Switch(
+          value: themeController.isDarkMode,
+          onChanged: (value) {
+            // Usamos 'read' aqui porque estamos dentro de uma função de callback
+            // e não precisamos que este widget específico se reconstrua
+            context.read<ThemeController>().toggleTheme(value);
+          },
+          activeColor: Colors.amber, // Cor da bolinha do switch
+        ),
+        const SizedBox(width: 8), // Um pequeno espaçamento
+      ],
     );
   }
 }
